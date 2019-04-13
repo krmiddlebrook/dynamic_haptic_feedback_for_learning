@@ -67,13 +67,6 @@ ledmap = {k:Led(board, v) for (k,v) in notemap.items()}
 
 
 
-pygame.midi.init()
-port = pygame.midi.get_default_output_id()
-player = pygame.midi.Output(port, 1)
-player.set_instrument(0)
-player.note_on(64, 127)
-time.sleep(1)
-player.note_off(64, 127)
 
 with mido.open_output('MPKmini2') as outport:
     for msg in inport:
