@@ -1,7 +1,6 @@
 '''
-Reads midi file and maps track info to haptic glove
+Reads midi file and then maps track info to haptic glove
 '''
-
 
 import mido
 from mido import Message, MidiFile, MidiTrack
@@ -114,20 +113,11 @@ def play_midi(midiFile):
                     led.off()
             else:
                 if msg.type == 'note_on':
-                    time.sleep(.25/5)
+                    time.sleep(.25/10)
 
                 led.toggle()
 
 
-
-
-
-
-
-"""
-Read MIDI file.:
-    Ex: python read_midi_demo.py 'test_track.mid'
-"""
 # filename = sys.argv[1]
 filename = '/Users/kaimiddlebrook/Documents/GitHub/dynamic_haptic_feedback_for_learning/mary_had_a_little_lamb.mid'
 

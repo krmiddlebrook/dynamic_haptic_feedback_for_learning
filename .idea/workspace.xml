@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9c108cf7-fc3c-493a-8afc-8100b69a95d4" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/scripts/midi_to_glove.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/read_midi_demo.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/read_midi_demo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/midi_to_glove.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/midi_to_glove.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -36,12 +35,12 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="Python Console" value="7" />
-          <entry key="py" value="572" />
+          <entry key="py" value="579" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="579" />
+          <entry key="Python" value="586" />
         </counts>
       </usages-collector>
     </session>
@@ -63,11 +62,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/scripts/midi_to_glove.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="276">
-              <caret line="149" column="25" selection-start-line="149" selection-start-column="25" selection-end-line="149" selection-end-column="25" />
+            <state relative-caret-position="263">
+              <caret line="119" lean-forward="true" selection-start-line="119" selection-end-line="119" />
               <folding>
                 <element signature="e#62#73#0" expanded="true" />
-                <marker date="1555197320129" expanded="true" signature="2923:3357" ph="..." />
+                <marker date="1555199546876" expanded="true" signature="2927:3356" ph="..." />
               </folding>
             </state>
           </provider>
@@ -219,7 +218,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1680" height="967" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Favorites" side_tool="true" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24969475" />
@@ -265,11 +263,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/scripts/midi_to_glove.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="276">
-          <caret line="149" column="25" selection-start-line="149" selection-start-column="25" selection-end-line="149" selection-end-column="25" />
+        <state relative-caret-position="263">
+          <caret line="119" lean-forward="true" selection-start-line="119" selection-end-line="119" />
           <folding>
             <element signature="e#62#73#0" expanded="true" />
-            <marker date="1555197320129" expanded="true" signature="2923:3357" ph="..." />
+            <marker date="1555199546876" expanded="true" signature="2927:3356" ph="..." />
           </folding>
         </state>
       </provider>
