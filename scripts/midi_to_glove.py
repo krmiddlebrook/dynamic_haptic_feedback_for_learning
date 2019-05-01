@@ -4,16 +4,18 @@ Reads midi file and then maps track info to haptic glove
 
 import mido
 from mido import Message, MidiFile, MidiTrack
-import time
 import sys
-import json
+import os
 import pprint
 import math
-from threading import Timer
-
-
+import argparse
 from BreakfastSerial import Arduino, Led
-from time import sleep
+import time
+
+
+parser = argparse.ArgumentParser(description='Play midi with the haptic feedback glove!')
+parser.add_argument('midi_file', help='the midi file name')
+args = parser.parse_args()
 
 
 # print(mido.get_input_names())
@@ -22,11 +24,12 @@ from time import sleep
 # inport = mido.open_input('MPKmini2')
 # outport = mido.open_outport()
 TEMPO = mido.bpm2tempo(100) # expresses bpm in microseconds per beat for mido
-print("default tempo = {}\n".format(TEMPO))
+# print("default tempo = {}\n".format(TEMPO))
 board = Arduino()
 print("COnnectedt")
-
-notemap = {'e':3, 'd':4, 'c':5, 'b':6}
+#
+# # notemap = {'e':3, 'd':4, 'c':5, 'b':6}
+notemap = {'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6}
 ledmap = {k:Led(board, v) for (k,v) in notemap.items()}
 
 
@@ -34,12 +37,13 @@ def get_midi_tempo(midiFile):
     for i, track in enumerate(midiFile.tracks):
         print('Track {}:'.format(i))
         for msg in track:
-
+            print('  {!r}'.format(msg))
             if msg.is_meta:
                 if msg.type == 'set_tempo':
                     tempo = msg.tempo
             elif not msg.is_meta:
-                print('  {!r}'.format(msg))
+                # print('  {!r}'.format(msg))
+                pass
         print('\n')
     return tempo
 
@@ -99,27 +103,46 @@ def note_mapper(note_value):
     return(note.lower())
 
 
-
-
-def play_midi(midiFile):
+def play_midi_no_feedback(midiFile):
 
     for msg in midiFile.play():
-        # print(msg)
+        print(msg)
+        # time.sleep(1)
         if msg.type=='note_on' or msg.type=='note_off':
-            # print(msg)
             led = ledmap.get(note_mapper(msg.note)[0], -1)
             if led == -1:
                 for note, led in ledmap.items():
                     led.off()
             else:
                 if msg.type == 'note_on':
-                    time.sleep(.25/10)
+                    time.sleep(.07)
 
                 led.toggle()
 
 
-# filename = sys.argv[1]
-filename = '/Users/kaimiddlebrook/Documents/GitHub/dynamic_haptic_feedback_for_learning/mary_had_a_little_lamb.mid'
+def play_midi(midiFile):
+
+    for msg in midiFile.play():
+        print(msg)
+        if msg.type=='note_on' or msg.type=='note_off':
+            led = ledmap.get(note_mapper(msg.note)[0], -1)
+            if led == -1:
+                for note, led in ledmap.items():
+                    led.off()
+            else:
+                if msg.type == 'note_on':
+                    time.sleep(.07)
+
+                led.toggle()
+                if msg.type == 'note_on':
+                    with mido.open_input('MPKmini2') as inport:
+                        for k_msg in inport:
+                            if note_mapper(k_msg.note) == note_mapper(msg.note):
+                                break
+
+
+
+filename = os.path.join('../midi_files', args.midi_file)
 
 """
 Open a MIDI file and get the tempo and ticks per beat info.
@@ -128,21 +151,18 @@ midiFile = MidiFile(filename)
 TICKS_PER_BEAT = midiFile.ticks_per_beat
 TEMPO = get_midi_tempo(midiFile)
 print('ticks_per_beat = {}, tempo = {} \n'.format(TICKS_PER_BEAT, TEMPO))
-pprint.pprint(midiFile.print_tracks())
 
-# midi_dict = midifile_to_dict(midi_file)
-# print(str(midi_dict))
 print('song name: {}'.format(midiFile.filename))
-# pprint.pprint(get_track_features(midiFile))
-# print_tick2seconds(midiFile, TEMPO)
+
 
 print('\n')
 # midiFile.print_tracks()
-play_midi(midiFile)
-
-
-
-
+try:
+    play_midi_no_feedback(midiFile)
+    while True:
+        play_midi(midiFile)
+except KeyboardInterrupt:
+    print('Stopped playing!')
 
 
 

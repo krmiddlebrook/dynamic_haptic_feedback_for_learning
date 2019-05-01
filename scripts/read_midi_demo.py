@@ -3,21 +3,15 @@ from mido import Message, MidiFile, MidiTrack
 import time
 import sys
 import json
-import pygame.midi
-
+import math
+import csv
+import pandas as pd
+import numpy as np
 from BreakfastSerial import Arduino, Led
 from time import sleep
 
 
-
-# # print(mido.get_input_names())
-# # print(mido.get_output_names())
-
-inport = mido.open_input('MPKmini2')
-# # outport = mido.open_outport()
 TEMPO = mido.bpm2tempo(100) # express bpm in microseconds per beat for mido
-board = Arduino()
-print("COnnectedt")
 
 # def get_midi_tempo(midiFile):
 #     for i, track in enumerate(midi_file.tracks):
@@ -61,30 +55,45 @@ print("COnnectedt")
 
 # midi_dict = midifile_to_dict(midi_file)
 # sys.stdout.write(str(midi_dict))
-notemap = {'e':3, 'd':4, 'c':5, 'b':6}
-ledmap = {k:Led(board, v) for (k,v) in notemap.items()}
+# notemap = {'e':3, 'd':4, 'c':5, 'b':6}
+# notemap = {'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6}
+# ledmap = {k:Led(board, v) for (k,v) in notemap.items()}
 
 
+def note_mapper(note_value):
+    octave = math.floor((note_value / 12) - 1)
+    notes = 'C{0},C#{0}/Db{0},D{0},D#{0}/Eb{0},E{0},F{0},F#{0}/Gb{0},G{0},G#{0}/Ab{0},A{0},A#{0}/Bb{0},B{0}'.format(octave).split(',')
+
+    note = notes[(note_value % 12)]
+    # print(note.lower())
+    return(note.lower())
 
 
+username = sys.argv[1]
+attempts = sys.argv[2]
+print(username)
+output_filename = '../user_studies/' + username + '_mary_lamb_attempt_' + str(attempts) + '.csv'
 
-with mido.open_output('MPKmini2') as outport:
-    for msg in inport:
-        start = time.time()
-        octave = int (msg.note / 12) - 1
-        notepos = (msg.note % 12) * 2
-        note = "C C#D D#E F F#G G#A A#B "[notepos: notepos+2].strip().lower()
-        led = ledmap.get(note, -1)
-        if led == -1:
-            for note, led in ledmap.items():
-                led.off()
-        else:
-            led.toggle()
-        if msg.type == 'note_on':
-            player.note_on(msg.note, msg.velocity)
-        if msg.type == 'note_off':
-            player.note_off(msg.note, msg.velocity)
-        print(note)
-del player
-pygame.midi.quit()
-outport.close()
+notes = []
+try:
+    with mido.open_input('MPKmini2') as inport:
+
+        for msg in inport:
+            print(msg)
+            notes.append(msg)
+
+
+except KeyboardInterrupt:
+    # print(notes)
+    pd.DataFrame(np.array(notes)).to_csv(output_filename)
+        # note = note_mapper(msg.note)
+        # led = ledmap.get(note, -1)
+        # if led == -1:
+        #     for note, led in ledmap.items():
+        #         led.off()
+        # else:
+        #     led.toggle()
+        # # print(note)
+
+# pd.DataFrame(notes).to_csv(output_filename)
+inport.close()
