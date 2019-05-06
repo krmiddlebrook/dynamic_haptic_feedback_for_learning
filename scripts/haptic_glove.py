@@ -12,9 +12,9 @@ from BreakfastSerial import Arduino, Led
 
 #
 parser = argparse.ArgumentParser(description='Haptic Glove Piano Learning App')
-parser.add_argument('midi_file', help='the name of the midi file that will be attempted', required=True)
-parser.add_argument('username', help='the name of the user', required=True)
-parser.add_argument('attempt', type=int, help='enter which attempt # this will be for the user', required=True)
+parser.add_argument('midi_file', help='the name of the midi file that will be attempted')
+parser.add_argument('username', help='the name of the user')
+parser.add_argument('attempt', type=int, help='enter which attempt # this will be for the user')
 args = parser.parse_args()
 
 
@@ -22,13 +22,12 @@ class HapticGlove:
     '''
     a class to interact with the haptic glove and record user data
     '''
-    def __init__(self, args):
+    def __init__(self, args, board, notemap, ledmap):
         self.args = args
         self.midiFile = MidiFile(os.path.join('../midi_files', args.midi_file))
-        self.board = Arduino()
-        self.notemap = {'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6}
-        self.ledmap = {k: Led(self.board, v) for (k, v) in self.notemap.items()}
-        print("COnnectedt to Glove")
+        self.board = board
+        self.notemap = notemap
+        self.ledmap = ledmap
 
     def note_mapper(self, note_value):
         '''
@@ -41,7 +40,7 @@ class HapticGlove:
             octave).split(',')
 
         note = notes[(note_value % 12)]
-        return note.lower()
+        return(note.lower())
 
     def play_midi_no_feedback(self):
         '''
@@ -51,7 +50,7 @@ class HapticGlove:
         for msg in self.midiFile.play():
             print(msg)
             if msg.type == 'note_on' or msg.type == 'note_off':
-                led = self.ledmap.get(self.note_mapper(msg.note), -1)
+                led = self.ledmap.get(self.note_mapper(msg.note)[0], -1)
                 if led == -1:
                     for note, led in self.ledmap.items():
                         led.off()
@@ -156,5 +155,19 @@ class HapticGlove:
         self.error = error
 
 
-def main(args):
-    glove = HapticGlove(args)
+def main():
+    board = Arduino()
+    print("COnnectedt to Haptic Glove!")
+    notemap = {'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6}
+    ledmap = {k: Led(board, v) for (k, v) in notemap.items()}
+
+    glove = HapticGlove(args, board, notemap, ledmap) # create instance of haptic glove
+
+    glove.play_midi_no_feedback() # play static haptic lesson for the midi file
+
+
+
+# if __name__=='main':
+#     main()
+
+main()
