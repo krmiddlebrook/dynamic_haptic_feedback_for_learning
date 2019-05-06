@@ -1,66 +1,22 @@
 import mido
-from mido import Message, MidiFile, MidiTrack
-import time
-import sys
-import json
 import math
-import csv
 import pandas as pd
 import numpy as np
-from BreakfastSerial import Arduino, Led
-from time import sleep
+import time
+import argparse
 
+parser = argparse.ArgumentParser(description='Program to capture midi input')
+parser.add_argument('midi_file', help='the name of the midi file that will be attempted')
+parser.add_argument('username', help='the name of the user')
+parser.add_argument('attempt', type=int, help='enter which attempt # this will be for the user')
+args = parser.parse_args()
 
 TEMPO = mido.bpm2tempo(100) # express bpm in microseconds per beat for mido
 
-# def get_midi_tempo(midiFile):
-#     for i, track in enumerate(midi_file.tracks):
-#         sys.stdout.write('=== Track {}\n'.format(i))
-#         for message in track:
-
-#             if message.is_meta:
-#                 if message.type == 'set_tempo':
-#                     tempo = message.tempo
-#                     sys.stdout.write('found track tempo! \n')
-#             elif not message.is_meta:
-#                 sys.stdout.write('  {!r}\n'.format(message))
-#     return tempo
-
-
-# def midifile_to_dict(mid):
-#     tracks = []
-#     for track in mid.tracks:
-#         tracks.append([vars(msg).copy() for msg in track])
-
-#     midi_dict = dict({'ticks_per_beat': mid.ticks_per_beat,
-#                       'tracks': tracks
-#                       })
-#     return  midi_dict
-
-
-# """
-# Read MIDI file.:
-#     Ex: python read_midi_demo.py 'test_track.mid'
-# """
-# # filename = sys.argv[1]
-# filename = 'test_track.mid'
-
-# """
-# Open a MIDI file and get the tempo and ticks per beat info.
-# """
-# midi_file = MidiFile(filename)
-# TICKS_PER_BEAT = midi_file.ticks_per_beat
-# TEMPO = get_midi_tempo(midi_file)
-# sys.stdout.write('ticks_per_beat = {}, tempo = {} \n'.format(TICKS_PER_BEAT, TEMPO))
-
-# midi_dict = midifile_to_dict(midi_file)
-# sys.stdout.write(str(midi_dict))
-# notemap = {'e':3, 'd':4, 'c':5, 'b':6}
-# notemap = {'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6}
-# ledmap = {k:Led(board, v) for (k,v) in notemap.items()}
 
 
 def note_mapper(note_value):
+
     octave = math.floor((note_value / 12) - 1)
     notes = 'C{0},C#{0}/Db{0},D{0},D#{0}/Eb{0},E{0},F{0},F#{0}/Gb{0},G{0},G#{0}/Ab{0},A{0},A#{0}/Bb{0},B{0}'.format(octave).split(',')
 
@@ -68,32 +24,76 @@ def note_mapper(note_value):
     # print(note.lower())
     return(note.lower())
 
+def convert_performance_to_df(notes):
+    '''
+    a function to create a dataframe containing the user's performance and then saves it to a csv file
+    :param notes: an array of arrays where each array contains information about the a note the user played. Each nest
+     array must have the following information: [msg.type, msg.note, msg.velocity, msg.time]
+    :return: user_data: a dataframe containing the user's performance
+    '''
 
-username = sys.argv[1]
-attempts = sys.argv[2]
-print(username)
-output_filename = '../user_studies/' + username + '_mary_lamb_attempt_' + str(attempts) + '.csv'
+    output_filename = '../user_studies/' + args.username + "_" + str(args.attempt) + "_" + args.midi_file + '.csv'
+    notes[0][3] = 0  # set the time value of the first note to 0
+    user_data = pd.DataFrame(np.array(notes),
+                             columns=['note_type', 'note', 'velocity', 'time'])  # save the user's performance
+    user_data.to_csv(output_filename, index=False)  # write user's performance to a csv file
+    return user_data
 
-notes = []
-try:
-    with mido.open_input('MPKmini2') as inport:
+def read_midi_input():
+    '''
+    a function to capture the user's midi performance and return it as a dataframe
+    :return: user_data: a dataframe containing the user's performance
+    '''
 
+    notes_played = []
+    finished = False
+    inport = mido.open_input('MPKmini2')
+    while not finished:
+        t1 = time.time()
         for msg in inport:
-            print(msg)
-            notes.append(msg)
+            t2 = time.time()
+            if msg.type == 'note_on':
+                if msg.note == 44: # if the note is 44, reset and rerun the function
+                    inport.close()
+                    print("\n ==========Your performance was successfully reset. You got this!========== \n")
+                    read_midi_input()
+                elif msg.note == 47:
+                    finished = True
+                    break
+                else:
+                    notes_played.append([msg.type, msg.note, msg.velocity, t2 - t1])
+                    print('type: {}, note: {}, velocity: {}, time: {}'.format(msg.type, int(msg.note),
+                                                                              int(msg.velocity), t2 - t1))
+            t1 = t2
+    inport.close()
+    user_data = convert_performance_to_df(notes_played) # convert performance to dataframe and write it to csv file
+    print('Great performance! Thanks for participating! \n') # thank the participant
+    return user_data
 
 
-except KeyboardInterrupt:
-    # print(notes)
-    pd.DataFrame(np.array(notes)).to_csv(output_filename)
-        # note = note_mapper(msg.note)
-        # led = ledmap.get(note, -1)
-        # if led == -1:
-        #     for note, led in ledmap.items():
-        #         led.off()
-        # else:
-        #     led.toggle()
-        # # print(note)
 
-# pd.DataFrame(notes).to_csv(output_filename)
-inport.close()
+read_midi_input()
+
+
+# notes_played = []
+# try:
+#     with mido.open_input('MPKmini2') as inport:
+#         t1 = time.time()
+#         for msg in inport:
+#             # print(msg)
+#             t2 = time.time()
+#             if msg.type == 'note_on':
+#                 notes_played.append([msg.type, msg.note, msg.velocity, t2-t1])
+#                 print('type: {}, note: {}, velocity: {}, time: {}'.format(msg.type, int(msg.note), int(msg.velocity), t2-t1))
+#             t1 = t2
+#
+# except KeyboardInterrupt:
+#     print('\n')
+#     print('Great attempt! Thanks for participating!')
+#     notes_played[0][3] = 0
+#     user_data = pd.DataFrame(np.array(notes_played), columns=['note_type', 'note', 'velocity', 'time']) # save the user's performance
+#     user_data.to_csv(output_filename, index=False) # write user's performance to a csv file
+
+
+
+

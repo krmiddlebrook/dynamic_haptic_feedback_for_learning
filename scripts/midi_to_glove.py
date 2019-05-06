@@ -4,9 +4,7 @@ Reads midi file and then maps track info to haptic glove
 
 import mido
 from mido import Message, MidiFile, MidiTrack
-import sys
 import os
-import pprint
 import math
 import argparse
 from BreakfastSerial import Arduino, Led
@@ -14,7 +12,7 @@ import time
 
 
 parser = argparse.ArgumentParser(description='Play midi with the haptic feedback glove!')
-parser.add_argument('midi_file', help='the midi file name')
+parser.add_argument('midi_file', help='enter the midi file name')
 args = parser.parse_args()
 
 
@@ -77,7 +75,6 @@ def get_track_features(midiFile):
     return feat_dict
 
 
-
 def print_tick2seconds(midiFile, tempo):
     for i, track in enumerate(midiFile.tracks):
         print('Track {}:'.format(i))
@@ -93,6 +90,7 @@ def print_tick2seconds(midiFile, tempo):
                     time_in_secs = mido.tick2second(msg.time, midiFile.ticks_per_beat, tempo)
                     print('{!r} -- time in secs: {}'.format(msg, time_in_secs))
         print('\n')
+
 
 def note_mapper(note_value):
     octave = math.floor((note_value / 12) - 1)
@@ -131,7 +129,7 @@ def play_midi(midiFile):
                     led.off()
             else:
                 if msg.type == 'note_on':
-                    time.sleep(.07)
+                    time.sleep(.04)
 
                 led.toggle()
                 if msg.type == 'note_on':
@@ -152,17 +150,18 @@ TICKS_PER_BEAT = midiFile.ticks_per_beat
 TEMPO = get_midi_tempo(midiFile)
 print('ticks_per_beat = {}, tempo = {} \n'.format(TICKS_PER_BEAT, TEMPO))
 
-print('song name: {}'.format(midiFile.filename))
+print('song name: {}'.format(midiFile.filename.split('/')[-1]))
 
 
 print('\n')
-# midiFile.print_tracks()
 try:
     play_midi_no_feedback(midiFile)
     while True:
         play_midi(midiFile)
-except KeyboardInterrupt:
-    print('Stopped playing!')
+except:
+    for note, led in ledmap.items():
+        led.off()
+    print('\n Thanks for playing! You got this!')
 
 
 

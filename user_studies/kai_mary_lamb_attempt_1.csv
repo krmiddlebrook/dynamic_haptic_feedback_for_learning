@@ -1,0 +1,19 @@
+,0
+0,note_on channel=0 note=71 velocity=67 time=0
+1,note_off channel=0 note=71 velocity=0 time=0
+2,note_on channel=0 note=71 velocity=81 time=0
+3,note_off channel=0 note=71 velocity=0 time=0
+4,note_on channel=0 note=67 velocity=14 time=0
+5,note_on channel=0 note=65 velocity=53 time=0
+6,note_off channel=0 note=65 velocity=0 time=0
+7,note_off channel=0 note=67 velocity=0 time=0
+8,note_on channel=0 note=65 velocity=29 time=0
+9,note_off channel=0 note=65 velocity=0 time=0
+10,note_on channel=0 note=65 velocity=61 time=0
+11,note_off channel=0 note=65 velocity=0 time=0
+12,note_on channel=0 note=65 velocity=79 time=0
+13,note_off channel=0 note=65 velocity=0 time=0
+14,note_on channel=0 note=62 velocity=77 time=0
+15,note_off channel=0 note=62 velocity=0 time=0
+16,note_on channel=0 note=62 velocity=86 time=0
+17,note_off channel=0 note=62 velocity=0 time=0
