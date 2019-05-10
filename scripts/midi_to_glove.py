@@ -156,8 +156,9 @@ print('song name: {}'.format(midiFile.filename.split('/')[-1]))
 print('\n')
 try:
     play_midi_no_feedback(midiFile)
-    # while True:
-    #     play_midi(midiFile)
+    print('now play with feedback')
+    while True:
+        play_midi(midiFile)
 except:
     for note, led in ledmap.items():
         led.off()
