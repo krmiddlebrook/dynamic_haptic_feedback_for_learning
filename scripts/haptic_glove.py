@@ -11,10 +11,10 @@ import os
 from BreakfastSerial import Arduino, Led
 
 # args to pass to program: midi file, username, attempt
-parser = argparse.ArgumentParser(description='Haptic Glove Piano Learning App')
+parser = argparse.ArgumentParser(description='A Haptic Glove Piano Learning App')
 parser.add_argument('midi_file', help='the name of the midi file that will be attempted')
-parser.add_argument('username', help='the name of the user')
-parser.add_argument('attempt', type=int, help='enter which attempt # this will be for the user')
+parser.add_argument('username', help='the name of the participant')
+parser.add_argument('attempt', type=int, help='enter which attempt # this will be for the participant')
 args = parser.parse_args()
 
 
@@ -214,6 +214,7 @@ def main():
                 perf_acc.append(perf2_acc)  # add performance 2 error to performance accuracy list
                 break
 
+    # save results
     improve_score = perf_acc[0] - perf_acc[1] # difference in error score before and after haptic lesson
     perf_data = [args.username, args.midi_file, perf_acc[0], perf_acc[1], improve_score, lesson_type]  # format study data for csv
     print(perf_data)
@@ -223,7 +224,7 @@ def main():
         perf_data.to_csv('../users_performance_data.csv', header=False, index=False, mode='a')  # append new data to csv
     else:
         perf_data = pd.DataFrame([perf_data], columns=['participant', 'midi_file', 'p1_error', 'p2_error', 'improve_score', 'lesson_type'])
-        perf_data.to_csv('../users_performance_data.csv')  # create and save data to csv
+        perf_data.to_csv('../users_performance_data.csv', index=False)  # create and save data to csv
 
     print('p1 error: {}, p2 error: {}, improvement score: {}'.format(perf_acc[0], perf_acc[1], improve_score))
     print('Study complete. Great job! Thank you for participating!\n')
