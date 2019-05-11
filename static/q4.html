@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <link rel="stylesheet" type="text/css" href="static/main.css" media="screen">
+        <title>Pre-Experiment Questionnaire</title>
+    </head>
+    <body>
+        <div id="quiz">
+            <!-- Question 4 -->
+            <div id="sticky1" class="card quizlib-question">
+                <div class="quizlib-question-title">4. Do you consider yourself a fast reader?</div>
+		            <div class="quizlib-question-answers">
+	                    <form method="POST" action="/q4submit">
+                            <label for="q4answer">Yes</label>
+	                    	<input type="radio" name="q4answer" value="yes" required>
+                            <label for="q4answer">No</label>
+	                    	<input type="radio" name="q4answer" values="no">
+	                    	<input type="submit" name="submitButton">
+	                    </form>
+                </div>
+            </div>
+    </body>
+</html>

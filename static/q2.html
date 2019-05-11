@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <link rel="stylesheet" type="text/css" href="static/main.css" media="screen">
+        <title>Pre-Experiment Questionnaire</title>
+    </head>
+    <body>
+        <div id="quiz">
+            <!-- Question 2 -->
+            <div id="sticky1" class="card quizlib-question">
+                <div class="quizlib-question-title">2. Do you have experience playing any musical instrument?</div>
+		            <div class="quizlib-question-answers">
+	                    <form method="POST" action="/q2submit">
+                            <label for="q2answer">Yes</label>
+	                    	<input type="radio" name="q2answer" value="yes" required>
+                            <label for="q2answer">No</label>
+	                    	<input type="radio" name="q2answer" values="no">
+	                    	<input type="submit" name="q2submit">
+	                    </form>
+                </div>
+            </div>
+    </body>
+</html>
