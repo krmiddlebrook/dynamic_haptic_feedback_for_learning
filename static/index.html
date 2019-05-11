@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <link rel="stylesheet" type="text/css" href="/static/main.css" media="screen">
+        <script src="/static/server.js"></script>
+        <title>Pre-Experiment Questionnaire</title>
+    </head>
+<!--     <script type="text/javascript">
+        window.onload = function() {
+            document.getElementById("startButton").addEventListener("click", function(e) {
+            console.log("QUIZ BEGIN");
+            });
+        }
+    </script> -->
+    <body>
+        <!-- Quiz Container -->
+        <div id="quiz">
+            <!-- Question 1 -->
+            <div id="sticky1" class="card quizlib-question">
+                <div class="quizlib-question-title">1. Do you have experience with playing piano?</div>
+		            <div class="quizlib-question-answers">
+	                    <ul>
+	                        <li><label><input type="radio" name="q2" value="a">Yes</label></li>
+	                        <li><label><input type="radio" name="q2" value="b">No</label></li>
+	                    </ul>
+                </div>
+            </div>
+            <!-- Question 2 -->
+            <div class="card quizlib-question">
+                <div class="quizlib-question-title">2. Do you have experience playing any musical instrument?</div>
+                <div class="quizlib-question-answers">
+                    <ul>
+                        <li><label><input type="radio" name="q2" value="a">Yes</label></li>
+                        <li><label><input type="radio" name="q2" value="b">No</label></li>
+                    </ul>
+                </div>
+            </div>
+            <!-- Question 3 -->
+            <div class="card quizlib-question">
+                <div class="quizlib-question-title">3. Would you be interested in learning how to play the piano?</div>
+                <div class="quizlib-question-answers">
+                    <ul>
+                        <li><label><input type="checkbox" name="q3" value="a"> Yes</label></li>
+                        <li><label><input type="checkbox" name="q3" value="b"> No</label></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card quizlib-question">
+                <div class="quizlib-question-title">4. Do you consider yourself a fast reader?</div>
+                <div class="quizlib-question-answers">
+                    <ul>
+                        <li><label><input type="checkbox" name="q4" value="a"> Yes</label></li>
+                        <li><label><input type="checkbox" name="q4" value="b"> No</label></li>
+                    </ul>
+                </div>
+            </div>
+            <form action="/submit" method="POST">
+                <button id="startButton" type="button">Check Answers</button>
+            </form>
+            <!-- Answer Button -->
+            
+        </div>
+    </body>
+</html>
