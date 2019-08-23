@@ -1,4 +1,4 @@
-# Haptic Glove: A Active Haptic Learning System to learn how to play the piano.
+# Haptic Glove: An Active Haptic Learning System to learn how to play the piano.
 A program that uses a custom made Active Haptic Learning (AHL) system to teach users how to play songs on the piano.
 
 ## Requirments
